@@ -15,6 +15,7 @@ let package = Package(
         .target(
             name: "App",
             dependencies: [
+                .product(name: "Leaf", package: "leaf"),
                 .product(name: "Vapor", package: "vapor")
             ],
             swiftSettings: [
