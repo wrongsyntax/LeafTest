@@ -2,14 +2,24 @@ import Vapor
 
 func routes(_ app: Application) throws {
     app.get { req in
-        return "It works!"
+        "It works!"
     }
 
     app.get("leaf") { req in
-        return req.view.render("index", ["title": "Hello Vapor!"])
+        req.view.render("index", ["title": "Hello Vapor!"])
     }
 
-    app.get("hello") { req -> String in
-        return "Hello, world!"
+
+    // Struct for the name retrieved from URL query string
+    // This is a Content struct for use in the app.get request
+    struct Hello: Content {
+        var name: String?
+    }
+
+    app.get("hello") { req -> EventLoopFuture<View> in
+        let hello = try req.query.decode(Hello.self)
+        let greeting = "Hello, \(hello.name ?? "anonymous visitor")"
+        print("Greeting the visitor. Name given is \(hello.name ?? "[not given]")")
+        return req.view.render("index", ["title": "Greetings", "hello": greeting])
     }
 }
